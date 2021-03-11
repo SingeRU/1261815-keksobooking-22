@@ -1,6 +1,5 @@
 import {createOffers} from './offer.js';
 
-const mapCanvas = document.querySelector('.map__canvas');
 const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 const offerShow = createOffers();

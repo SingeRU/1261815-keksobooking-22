@@ -1,13 +1,13 @@
 import {offerShow} from './card.js';
-import {createOffers} from './offer.js';
 
 const MAIN_LOCATION_X = 35.65000;
 const MAIN_LOCATION_Y = 139.70000;
 
-const map = L.map('map-canvas').setView({
-  lat: MAIN_LOCATION_X,
-  lng: MAIN_LOCATION_Y,
-}, 13);
+const map = L.map('map-canvas')
+  .setView({
+    lat: MAIN_LOCATION_X,
+    lng: MAIN_LOCATION_Y,
+  }, 13);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -36,21 +36,20 @@ mainPinMarker.addTo(map);
 
 //Создание маркеров
 offerShow.forEach((offers) => {  
-
   const icon = L.icon({
-      iconUrl: '/img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+    iconUrl: '/img/pin.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+  });
 
- const marker = L.marker(
+  const marker = L.marker(
     {
       lat: offers.location.locationX,
       lng: offers.location.locationY,
     },
     {
       icon,
-    }
+    },
   );
   marker.addTo(map).bindPopup();   
 });
