@@ -33,6 +33,7 @@ offerShow.forEach((offers) => {
   const featureContainer = newOfferElement.querySelector('.popup__features');
   const photosContainer = newOfferElement.querySelector('.popup__photos'); 
 
+
   newOfferElement.querySelector('.popup__title').textContent = offers.offer.title;
   newOfferElement.querySelector('.popup__text--address').textContent = offers.offer.address;
   newOfferElement.querySelector('.popup__text--price').textContent = offers.offer.price;
@@ -47,4 +48,4 @@ offerShow.forEach((offers) => {
   offerFragment.appendChild(newOfferElement);
 });
 
-mapCanvas.appendChild(offerFragment);
+export {offerShow};
