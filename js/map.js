@@ -1,56 +1,65 @@
 import {offerShow} from './card.js';
+import {offer} from './offer.js';
+/* global L:readonly */
 
-const MAIN_LOCATION_X = 35.65000;
-const MAIN_LOCATION_Y = 139.70000;
+const STARTING_LATITUDE = 35.6804;
+const STARTING_LONGITUDE = 139.7690;
 
-const map = L.map('map-canvas')
-  .setView({
-    lat: MAIN_LOCATION_X,
-    lng: MAIN_LOCATION_Y,
-  }, 13);
+const map = L.map('map-canvas').setView({
+  lat: STARTING_LATITUDE,
+  lng: STARTING_LONGITUDE,
+}, 10);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
 ).addTo(map);
-
+  
 const mainPinIcon = L.icon({
-  iconUrl: '/img/main-pin.svg',
+  iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
-
+  
 const mainPinMarker = L.marker(
   {
-    lat: MAIN_LOCATION_X,
-    lng: MAIN_LOCATION_Y,
+    lat: STARTING_LATITUDE,
+    lng: STARTING_LONGITUDE,
   },
   {
+    draggable: true,
     icon: mainPinIcon,
   },
 );
-
+  
 mainPinMarker.addTo(map);
 
-//Создание маркеров
-offerShow.forEach((offers) => {  
+offer.forEach(({author, location, offer}) => {
   const icon = L.icon({
-    iconUrl: '/img/pin.svg',
+    iconUrl: 'img/pin.svg',
     iconSize: [40, 40],
     iconAnchor: [20, 40],
   });
-
+  const lat = location.locationX;
+  const lng = location.locationY;
   const marker = L.marker(
     {
-      lat: offers.location.locationX,
-      lng: offers.location.locationY,
+      lat,
+      lng,
     },
     {
       icon,
     },
   );
-  marker.addTo(map).bindPopup();   
-});
 
+  marker
+    .addTo(map)
+    .bindPopup(
+      offerShow({author, offer}),
+      {
+        keepInView: true,
+      },
+    );
+});
