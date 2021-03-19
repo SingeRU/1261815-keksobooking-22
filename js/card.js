@@ -15,8 +15,10 @@ const renderPhotos = (container, data) => {
   data.forEach((item) => {
     const img = document.createElement('img'); // создание элемента
     img.src = item;
+    img.width = 45;
+    img.height = 40;
     container.appendChild(img) // добавление в контейнер элемента
-
+    
   })
 };
 

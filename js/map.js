@@ -1,14 +1,17 @@
 import {offerShow} from './card.js';
 import {offer} from './offer.js';
+import {formActivation} from './form.js';
 /* global L:readonly */
 
 const STARTING_LATITUDE = 35.6804;
 const STARTING_LONGITUDE = 139.7690;
 
-const map = L.map('map-canvas').setView({
-  lat: STARTING_LATITUDE,
-  lng: STARTING_LONGITUDE,
-}, 10);
+const map = L.map('map-canvas')
+  .on('load', formActivation)
+  .setView({
+    lat: STARTING_LATITUDE,
+    lng: STARTING_LONGITUDE,
+  },10);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
