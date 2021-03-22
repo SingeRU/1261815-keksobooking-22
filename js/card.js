@@ -22,9 +22,10 @@ const renderPhotos = (container, data) => {
   })
 };
 
+
 const offerShow = (({author, offer}) => {
   const newOfferElement = offerTemplate.cloneNode(true);
-  
+    
   const featureContainer = newOfferElement.querySelector('.popup__features');
   const photosContainer = newOfferElement.querySelector('.popup__photos'); 
 
@@ -42,9 +43,5 @@ const offerShow = (({author, offer}) => {
   return newOfferElement;
 });
 
-const renderCard = (container, offer) => {
-  const card = offerShow(offer);
-  container.appendChild(card);
-}
 
-export {renderCard, offerShow}
+export {offerShow}
