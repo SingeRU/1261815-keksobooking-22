@@ -1,17 +1,18 @@
 import {offerShow} from './card.js';
-import {offer} from './offer.js';
-import {formActivation} from './form.js';
+import {formActivation, getAddress, showError} from './form.js';
+import {getData} from './data.js';
 /* global L:readonly */
 
 const STARTING_LATITUDE = 35.6804;
 const STARTING_LONGITUDE = 139.7690;
+const STARTING_ZOOM = 10;
 
 const map = L.map('map-canvas')
   .on('load', formActivation)
   .setView({
     lat: STARTING_LATITUDE,
     lng: STARTING_LONGITUDE,
-  },10);
+  },STARTING_ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -35,34 +36,61 @@ const mainPinMarker = L.marker(
     draggable: true,
     icon: mainPinIcon,
   },
-);
-  
-mainPinMarker.addTo(map);
+).addTo(map);
 
-offer.forEach(({author, location, offer}) => {
-  const icon = L.icon({
-    iconUrl: 'img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-  const lat = location.locationX;
-  const lng = location.locationY;
-  const marker = L.marker(
-    {
-      lat,
-      lng,
-    },
-    {
-      icon,
-    },
-  );
+const onPinMove = (evt) => {
+  const lat = evt.target.getLatLng().lat;
+  const long = evt.target.getLatLng().lng;
+  getAddress(lat, long);
+}
 
-  marker
-    .addTo(map)
-    .bindPopup(
-      offerShow({author, offer}),
+mainPinMarker.on('move', onPinMove);
+
+const createDefaultPin = (poster) => {
+
+  poster.forEach((advertisment) => {
+    const {location} = advertisment;
+
+    const defaultPinIcon = L.icon ({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const marker = L.marker (
       {
-        keepInView: true,
+        lat: location.lat,
+        lng: location.lng,
+      },
+      {
+        icon:defaultPinIcon,
       },
     );
-});
+
+    marker
+      .addTo(map)
+      .bindPopup(
+        offerShow(advertisment),
+        {
+        },
+      );
+    marker.on('click', onPinMove);  
+  });
+};
+
+//MAP RESET
+const resetMap = () => {
+  map.setView({
+    lat: STARTING_LATITUDE,
+    lng: STARTING_LONGITUDE,
+  },STARTING_ZOOM);
+
+  mainPinMarker.setLatLng(L.latLng(STARTING_LATITUDE, STARTING_LONGITUDE));
+
+}
+
+getData(createDefaultPin, showError);
+
+export {resetMap};
+
+
