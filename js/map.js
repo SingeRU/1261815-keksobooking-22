@@ -55,8 +55,9 @@ mainPinMarker.on('move', onPinMove);
 const createDefaultPin = (poster) => {
 
   poster
-    .slice(0, ADDS_LIMIT)
+    .slice()
     .filter(getFilteredOffer)
+    .slice(0, ADDS_LIMIT)
     .forEach((offer) => {
       const {location} = offer;
 
