@@ -58,34 +58,34 @@ const createDefaultPin = (poster) => {
     .slice(0, ADDS_LIMIT)
     .filter(getFilteredOffer)
     .forEach((offer) => {
-    const {location} = offer;
+      const {location} = offer;
 
-    const defaultPinIcon = L.icon ({
-      iconUrl: 'img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+      const defaultPinIcon = L.icon ({
+        iconUrl: 'img/pin.svg',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
 
-    const marker = L.marker (
-      {
-        lat: location.lat,
-        lng: location.lng,
-      },
-      {
-        icon:defaultPinIcon,
-      },
-    );
-
-    marker
-      .addTo(map)
-      .bindPopup(
-        offerShow(offer),
+      const marker = L.marker (
         {
+          lat: location.lat,
+          lng: location.lng,
+        },
+        {
+          icon:defaultPinIcon,
         },
       );
-    marker.on('click', onPinMove);  
 
-  });
+      marker
+        .addTo(map)
+        .bindPopup(
+          offerShow(offer),
+          {
+          },
+        );
+      marker.on('click', onPinMove);  
+    });
+
 };
 
 //MAP RESET
@@ -99,7 +99,7 @@ const resetMap = () => {
 };
 
 getData((data) => {
-  createRegularPin(data);
+  createDefaultPin(data);
   setFilterChange(_.debounce(() => createDefaultPin(data), RENDER_DELAY));
 }, showError);
 
