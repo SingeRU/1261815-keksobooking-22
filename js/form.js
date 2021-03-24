@@ -4,6 +4,7 @@ import {resetMap} from './map.js'
 
 const ALERT_SHOW_TIME = 5000;
 
+
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
 
@@ -145,7 +146,7 @@ const showSuccess = () => {
 
   successPopup.style.width = '330px';
   successPopup.style.height = '150px';
-  successPopup.style.position = 'absolute';
+  successPopup.style.position = 'fixed';
   successPopup.style.zIndex = 1000;
   successPopup.style.left = '37%';
   successPopup.style.top = '100%';
@@ -165,7 +166,7 @@ const showError = () => {
   const alertContainer = document.createElement('div');
 
   alertContainer.style.zIndex = 100;
-  alertContainer.style.position = 'absolute';
+  alertContainer.style.position = 'fixed';
   alertContainer.style.left = 0;
   alertContainer.style.top = 0;
   alertContainer.style.right = 0;
@@ -206,6 +207,8 @@ adForm.addEventListener('submit', (evt) => {
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   formReset();
-})
+});
+
 export {formActivation, getAddress, showError};
+export {mapForm};
 

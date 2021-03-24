@@ -1,11 +1,15 @@
 import {offerShow} from './card.js';
 import {formActivation, getAddress, showError} from './form.js';
 import {getData} from './data.js';
+import {setFilterChange, getFilteredOffer} from './filter.js';
 /* global L:readonly */
+/* global _:readonly */
 
 const STARTING_LATITUDE = 35.6804;
 const STARTING_LONGITUDE = 139.7690;
 const STARTING_ZOOM = 10;
+const ADDS_LIMIT = 10;
+const RENDER_DELAY = 500;
 
 const map = L.map('map-canvas')
   .on('load', formActivation)
@@ -46,10 +50,15 @@ const onPinMove = (evt) => {
 
 mainPinMarker.on('move', onPinMove);
 
+
+
 const createDefaultPin = (poster) => {
 
-  poster.forEach((advertisment) => {
-    const {location} = advertisment;
+  poster
+    .slice(0, ADDS_LIMIT)
+    .filter(getFilteredOffer)
+    .forEach((offer) => {
+    const {location} = offer;
 
     const defaultPinIcon = L.icon ({
       iconUrl: 'img/pin.svg',
@@ -70,11 +79,12 @@ const createDefaultPin = (poster) => {
     marker
       .addTo(map)
       .bindPopup(
-        offerShow(advertisment),
+        offerShow(offer),
         {
         },
       );
     marker.on('click', onPinMove);  
+
   });
 };
 
@@ -86,10 +96,12 @@ const resetMap = () => {
   },STARTING_ZOOM);
 
   mainPinMarker.setLatLng(L.latLng(STARTING_LATITUDE, STARTING_LONGITUDE));
+};
 
-}
-
-getData(createDefaultPin, showError);
+getData((data) => {
+  createRegularPin(data);
+  setFilterChange(_.debounce(() => createDefaultPin(data), RENDER_DELAY));
+}, showError);
 
 export {resetMap};
 
