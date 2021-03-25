@@ -109,6 +109,7 @@ const resetMap = () => {
 };
 
 getData((data) => {
+  createDefaultPin(data);
   setFilterChange(_.debounce(() => {
     removeMarkers();
     createDefaultPin(data);
