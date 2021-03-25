@@ -6,12 +6,8 @@ const filterType = mapForm.querySelector('#housing-type');
 // const filterGuests = mapForm.querySelector('#housing-guests');
 // const filterFeatures = mapForm.querySelector('#housing-features');
 
-const checkType = (elem) => {
-  if(elem.value === filterType.value) {
-    return elem.value
-  } else {
-    return 'any'
-  }
+const checkType = (data) => {
+  return filterType.value === 'any' || data.offer.type === filterType.value;
 };
 
 const getFilteredOffer = (data) => {

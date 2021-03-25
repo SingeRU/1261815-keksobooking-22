@@ -50,7 +50,7 @@ const onPinMove = (evt) => {
 
 mainPinMarker.on('move', onPinMove);
 
-
+const markers = [];
 
 const createDefaultPin = (poster) => {
 
@@ -84,10 +84,19 @@ const createDefaultPin = (poster) => {
           {
           },
         );
-      marker.on('click', onPinMove);  
+      marker.on('click', onPinMove); 
+      markers.push(marker); 
     });
 
 };
+
+//REMOVE MARKER
+
+const removeMarkers = () => {
+  markers.forEach((marker) => {
+    marker.remove();
+  })
+}
 
 //MAP RESET
 const resetMap = () => {
@@ -100,10 +109,12 @@ const resetMap = () => {
 };
 
 getData((data) => {
-  createDefaultPin(data);
-  setFilterChange(_.debounce(() => createDefaultPin(data), RENDER_DELAY));
+  setFilterChange(_.debounce(() => {
+    removeMarkers();
+    createDefaultPin(data);
+  }, RENDER_DELAY));
 }, showError);
 
-export {resetMap};
+export {resetMap, removeMarkers};
 
 
