@@ -29,4 +29,4 @@ const sendData = (onSuccess, onError, body) => {
 };
 
 export {getData, sendData};
-export {FIXED_NUMBER, POST_URL};
+export {FIXED_NUMBER, GET_URL, POST_URL};
