@@ -1,9 +1,7 @@
 import {FIXED_NUMBER, POST_URL} from './data.js';
 import {sendData} from './data.js';
 import {resetMap} from './map.js'
-
-const ALERT_SHOW_TIME = 5000;
-
+import {showErrorPopup, showSuccessPopup} from './popup.js';
 
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
@@ -23,19 +21,15 @@ const mapFormFieldsets = mapForm.querySelectorAll('.map__filter, .map__features'
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
+const MAX_PRICE_PER_NIGHT = 1000000;
 
-const minPrice = {
+const minPrices = {
   bungalow: 0,
   flat: 1000,
   house: 5000,
   palace: 10000,
 }
   
-const getMinPrice = () => {
-  currentPrice.placeholder = minPrice[houseTypeList.value];
-  currentPrice.min = minPrice[houseTypeList.value];
-}
-
 const getAddress = (lat, lng) => {
   const latitude = lat.toFixed(FIXED_NUMBER);
   const longitude = lng.toFixed(FIXED_NUMBER);
@@ -71,28 +65,50 @@ const formActivation = () => {
   });
 }
 
-//ROOMINESS CHECK
-const roominess = () => {
+//ROOMS NUMBER CHECK
+const onRoomsNumberSelect = () => {
   const capacityOptions = selectCapacity.querySelectorAll('option');
-  const roomsNumber =  selectRoomNumber.value;
+  const roomsNumber = Number(selectRoomNumber.value);
+  const availableRooms = numberOfRooms[roomsNumber];
+
   capacityOptions.forEach((option) => {
     option.disabled = true;
   });
 
-  numberOfRooms[roomsNumber].forEach((numberOfSeats) => {
+  availableRooms.forEach((numberOfSeats) => {
     capacityOptions.forEach((option) => {
       if (Number(option.value) === numberOfSeats) {
         option.disabled = false;
       }
     });
-    if (!numberOfRooms[roomsNumber].includes(selectCapacity.value)) {
-      const maxCapacity = numberOfRooms[roomsNumber][numberOfRooms[roomsNumber].length - 1];
+    if (!availableRooms.includes(Number(selectCapacity.value))) {
+      const maxCapacity = availableRooms[availableRooms.length - 1];
       selectCapacity.value = maxCapacity;
     }
   });
 };
 
-selectRoomNumber.addEventListener('input', roominess)
+// const seatingCapacityOptions = capacitySelect.querySelectorAll('option');
+// const roomsNumber =  Number(roomsNumberSelect.value);
+// const possibleCapacities = RoomCapacities[roomsNumber];
+
+// seatingCapacityOptions.forEach((option) => {
+//   option.disabled = true;
+// });
+
+// possibleCapacities.forEach((seatsAmount) => {
+//   seatingCapacityOptions.forEach((option) => {
+//     if (Number(option.value) === seatsAmount) {
+//       option.disabled = false;
+//     }
+//   });
+//   if (!possibleCapacities.includes(Number(capacitySelect.value))) {
+//     const maxCapacity = possibleCapacities[possibleCapacities.length - 1];
+//     capacitySelect.value = maxCapacity;
+//   }
+// });
+
+selectRoomNumber.addEventListener('change', onRoomsNumberSelect);
 
 //CHECK_IN_TIME CHECK_OUT_TIME CONNECTION
 const onCheckInTime = () => {
@@ -107,21 +123,28 @@ checkOutTime.addEventListener('change', onCheckOutTime);
 
 //HOUSE_TYPE CONNECTION
 const onHouseType = () => {
-  getMinPrice();
-}
+  currentPrice.placeholder = minPrices[houseTypeList.value];
+  currentPrice.min = minPrices[houseTypeList.value];
+};
 
-const onCurrentPrice = () => {
-  getMinPrice();
-  if(currentPrice.value < currentPrice.min) {
-    currentPrice.setCustomValidity('Минимальная цена за ночь ' + currentPrice.min + ' руб.');
+currentPrice.placeholder = minPrices[houseTypeList.value];
+
+const onPriceInput = () => {
+  const price = currentPrice.value;
+  const type = houseTypeList.value;
+  const minPrice = minPrices[type];
+
+  if (price < minPrice) {
+    currentPrice.setCustomValidity(`Стоимость должна быть не менее ${minPrice}`);
+  } else if (price > MAX_PRICE_PER_NIGHT) {
+    currentPrice.setCustomValidity(`Стоимость не должна превышать ${MAX_PRICE_PER_NIGHT}`);
   } else {
     currentPrice.setCustomValidity('');
   }
-
   currentPrice.reportValidity();
 };
 
-currentPrice.addEventListener('input', onCurrentPrice);
+currentPrice.addEventListener('input', onPriceInput);
 houseTypeList.addEventListener('change', onHouseType);
 
 //FORM VALIDATION
@@ -139,69 +162,29 @@ titleInput.addEventListener('input', () => {
   titleInput.reportValidity();
 });
 
-//SUCCESS POPUP
-
-const showSuccess = () => {
-  const successPopup = document.createElement('div');
-
-  successPopup.style.width = '330px';
-  successPopup.style.height = '150px';
-  successPopup.style.position = 'fixed';
-  successPopup.style.zIndex = 1000;
-  successPopup.style.left = '37%';
-  successPopup.style.top = '100%';
-  successPopup.style.paddingTop = '66px';
-  successPopup.style.fontSize = '15px';
-  successPopup.style.fontWeight = 'bold';
-  successPopup.style.textAlign = 'center';
-  successPopup.style.backgroundColor = 'white';
-  successPopup.textContent = 'Ваше объявление успешно размещено!'
-  document.body.append(successPopup);
-
-  setTimeout(() => successPopup.remove(), ALERT_SHOW_TIME);
-};
-
-//ERROR POPUP
-const showError = () => {
-  const alertContainer = document.createElement('div');
-
-  alertContainer.style.zIndex = 100;
-  alertContainer.style.position = 'fixed';
-  alertContainer.style.left = 0;
-  alertContainer.style.top = 0;
-  alertContainer.style.right = 0;
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '30px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
-  alertContainer.textContent = 'Неудалось отправить форму! Попробуйте ещё раз.';
-  
-  document.body.append(alertContainer);
-
-  setTimeout(() => alertContainer.remove(), ALERT_SHOW_TIME);
-};
-
-
 //RESET
 const formReset = () => {
   adForm.reset();
   mapForm.reset();
   resetMap();
+  onRoomsNumberSelect();
 }
 
 //FORM SUBMIT
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+const offerFormSubmit = (onSuccess, onError) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
 
-  const formData = new FormData(evt.target);
+    const formData = new FormData(evt.target);
 
-  sendData(
-    POST_URL,
-    showSuccess, 
-    showError, 
-    formData);
-  formReset();
-});
+    sendData(
+      POST_URL,
+      onSuccess,
+      onError,
+      formData,
+    );
+  });
+};
 
 //FORM RESET
 resetButton.addEventListener('click', (evt) => {
@@ -209,6 +192,11 @@ resetButton.addEventListener('click', (evt) => {
   formReset();
 });
 
-export {formActivation, getAddress, showError};
-export {mapForm};
+offerFormSubmit (() => {
+  showSuccessPopup();
+  formReset();
+}, showErrorPopup)
+
+export {formActivation, getAddress, offerFormSubmit};
+export {mapForm, formReset};
 

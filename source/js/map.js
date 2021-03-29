@@ -1,7 +1,8 @@
 import {offerShow} from './card.js';
-import {formActivation, getAddress, showError} from './form.js';
-import {getData} from './data.js';
-import {setFilterChange, getFilteredOffer} from './filter.js';
+import {formActivation, getAddress, formReset} from './form.js';
+
+
+import {getFilteredOffer} from './filter.js';
 /* global L:readonly */
 /* global _:readonly */
 
@@ -9,10 +10,14 @@ const STARTING_LATITUDE = 35.6804;
 const STARTING_LONGITUDE = 139.7690;
 const STARTING_ZOOM = 10;
 const ADDS_LIMIT = 10;
-const RENDER_DELAY = 500;
+
+const onMapLoad = () => {
+  formActivation(),
+  getAddress(STARTING_LATITUDE, STARTING_LONGITUDE);
+}
 
 const map = L.map('map-canvas')
-  .on('load', formActivation)
+  .on('load', onMapLoad)
   .setView({
     lat: STARTING_LATITUDE,
     lng: STARTING_LONGITUDE,
@@ -108,14 +113,8 @@ const resetMap = () => {
   mainPinMarker.setLatLng(L.latLng(STARTING_LATITUDE, STARTING_LONGITUDE));
 };
 
-getData((data) => {
-  createDefaultPin(data);
-  setFilterChange(_.debounce(() => {
-    removeMarkers();
-    createDefaultPin(data);
-  }, RENDER_DELAY));
-}, showError);
 
-export {resetMap, removeMarkers};
+
+export {resetMap, removeMarkers, createDefaultPin};
 
 

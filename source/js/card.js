@@ -1,13 +1,24 @@
+import {getOfferType} from './utils.js';
+
 const offerTemplate = document.querySelector('#card').content.querySelector('.popup');
 
-const renderFeatures = (container, data) => {
-  container.innerHTML = '' //очистка контейнера с шаблонами
-  data.forEach((item) => {
-    const li = document.createElement('li'); // создание элемента
-    li.classList.add(`feature-item--${item}`) // добавление классов
-    container.appendChild(li) // добавление в контейнер элемента
-    li.textContent = item;
-  })
+const isElementVisible = (element, components) => {
+  if (components.length === 0) {
+    element.setAttribute('style', 'visibility: hidden;');
+    return false;
+  }
+  element.setAttribute('style', 'visibility: visible;');
+  return true;
+};
+
+const renderFeatures = (featuresElement, offer) => {
+  if (!isElementVisible(featuresElement, offer.features)) {
+    return;
+  }
+
+  featuresElement.innerHTML = offer.features.map((feature) => {
+    return `<li class="popup__feature popup__feature--${feature}"></li>`;
+  }).join('');
 };
 
 const renderPhotos = (container, data) => {
@@ -32,11 +43,10 @@ const offerShow = (({author, offer}) => {
   newOfferElement.querySelector('.popup__title').textContent = offer.title;
   newOfferElement.querySelector('.popup__text--address').textContent = offer.address;
   newOfferElement.querySelector('.popup__text--price').textContent = offer.price;
-  newOfferElement.querySelector('.popup__type').textContent = offer.type;
+  newOfferElement.querySelector('.popup__type').textContent = getOfferType(offer.type);
   newOfferElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей.';
   newOfferElement.querySelector('.popup__text--time').textContent = ' Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
-  newOfferElement.querySelector('.popup__features').textContent = offer.features;
-  renderFeatures(featureContainer, offer.features);
+  renderFeatures(featureContainer, offer);
   renderPhotos(photosContainer, offer.photos);
   newOfferElement.querySelector('.popup__avatar').src = author.avatar;
   
