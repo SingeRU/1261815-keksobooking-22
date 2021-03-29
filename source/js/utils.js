@@ -1,7 +1,7 @@
 const ALERT_SHOW_TIME = 5000;
 
 const getRandomNumber = function (from, to, signsQuantity) {
-  if(from > to || from == to) {
+  if(from > to || from === to) {
     throw new Error('Значение "от" не может быть больше или равнятся значению "до"!');
   }
     
@@ -57,4 +57,12 @@ const isEscEvent = (evt) => {
 
 const isEnterEvent = (evt) => evt.key === 'Enter';
 
-export {getRandomArrayElement, getRandomNumber, getOfferType, showError, isEscEvent, isEnterEvent};
+
+export {
+  getRandomArrayElement,
+  getRandomNumber, 
+  getOfferType, 
+  showError, 
+  isEscEvent, 
+  isEnterEvent
+};

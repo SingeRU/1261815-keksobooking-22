@@ -40,8 +40,9 @@ const checkFeatures = (data) => {
 
   let count = 0;
   checkedFeatures.forEach((feature) => {
-    if(data.offer.features.includes(feature.value))
+    if(data.offer.features.includes(feature.value)) {
       count++;
+    }    
   })
 
   return count === checkedFeatures.length;

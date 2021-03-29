@@ -1,10 +1,7 @@
 import {offerShow} from './card.js';
-import {formActivation, getAddress, formReset} from './form.js';
-
-
+import {formActivation, getAddress} from './form.js';
 import {getFilteredOffer} from './filter.js';
 /* global L:readonly */
-/* global _:readonly */
 
 const STARTING_LATITUDE = 35.6804;
 const STARTING_LONGITUDE = 139.7690;

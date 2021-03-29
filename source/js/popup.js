@@ -11,14 +11,14 @@ document.body.append(successPopup);
 document.body.append(errorPopup);
 
 const closeModal = (modal) => {
-    modal.classList.add('hidden');
+  modal.classList.add('hidden');
 };
 
 const onClick = (modal) => {
-    return (evt) => {
-      evt.preventDefault();
-      closeModal(modal);
-    }
+  return (evt) => {
+    evt.preventDefault();
+    closeModal(modal);
+  }
 };
 
 const onPopupKeydown = (modal) => {

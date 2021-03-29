@@ -1,5 +1,4 @@
-import {FIXED_NUMBER, POST_URL} from './data.js';
-import {sendData} from './data.js';
+import {FIXED_NUMBER, POST_URL, sendData} from './data.js';
 import {resetMap} from './map.js'
 import {showErrorPopup, showSuccessPopup} from './popup.js';
 
@@ -87,26 +86,6 @@ const onRoomsNumberSelect = () => {
     }
   });
 };
-
-// const seatingCapacityOptions = capacitySelect.querySelectorAll('option');
-// const roomsNumber =  Number(roomsNumberSelect.value);
-// const possibleCapacities = RoomCapacities[roomsNumber];
-
-// seatingCapacityOptions.forEach((option) => {
-//   option.disabled = true;
-// });
-
-// possibleCapacities.forEach((seatsAmount) => {
-//   seatingCapacityOptions.forEach((option) => {
-//     if (Number(option.value) === seatsAmount) {
-//       option.disabled = false;
-//     }
-//   });
-//   if (!possibleCapacities.includes(Number(capacitySelect.value))) {
-//     const maxCapacity = possibleCapacities[possibleCapacities.length - 1];
-//     capacitySelect.value = maxCapacity;
-//   }
-// });
 
 selectRoomNumber.addEventListener('change', onRoomsNumberSelect);
 
